@@ -1,4 +1,4 @@
-lines = open('data_drlej.txt').read().splitlines()
+lines = open('data_last.txt').read().splitlines()
 f= open("guru99.txt","w+")
 for line in lines:
     list_line = line.split(',')
