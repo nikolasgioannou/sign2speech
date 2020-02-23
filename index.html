@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script src="index.js"></script>
+    <style>
+      #maincontainer {
+	  display: flex;
+	  flex-direction: row;
+      }
+      .subcontainer {
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: center;
+	  align-items: center;
+      }
+      .tacontainer {
+	  align-items: stretch;
+      }
+      .tacontainer textarea {
+	  flex-grow: 1;
+	  width: 300px;
+      }
+      #signgraphic {
+	  height: 300px;
+	  transform: scaleX(-1);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="maincontainer">
+      <canvas id="canvas" width="1860" height="440">
+      </canvas>
+      <div class="subcontainer">
+	<img id="signgraphic" src="https://www.lifeprint.com/asl101/fingerspelling/abc-gifs/h.gif"></img>
+	<h1 id="signlabel">H</h1>
+      </div>
+      <div class="subcontainer tacontainer">
+	<textarea id="labels" readonly></textarea>
+	<textarea id="data" readonly></textarea>
+	<textarea id="times" readonly></textarea>
+      </div>
+    </div>
+    <h1 id="count"></h1>
+  </body>
+</html>

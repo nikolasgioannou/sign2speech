@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="gui.js"></script>
+    <style>
+      body {
+	  background-color: #121212;
+	  padding: 20px;
+	  color: #dedede;
+	  font: 28px sans-serif;
+      }
+      #mainDiv {
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: center;
+	  align-items: center;
+      }
+      #dataEntryCanvas {
+	  margin: 20px;
+      }
+      #lettersBox {
+	  border: 1px solid #dedede;
+	  border-radius: 5px;
+	  height: 50px;
+	  width: 600px;
+	  background-color: #121212;
+	  color: #dedede;
+	  font: 28px sans-serif;
+      }
+      #dataEntryDiv {
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+      }
+      #dataEntryImage {
+	  filter: invert(1);
+	  transform: scaleX(-1);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mainDiv">
+      <h1 id="stateLabel"></h1>
+      <div id="dataEntryDiv">
+	<canvas id="dataEntryCanvas" width="200" height="200"></canvas>
+	<img id="dataEntryImage" height="200"></img>
+      </div>
+      <input id="lettersBox" readonly></input>
+      <ul id="choicesList">
+      </ul>
+    </div>
+  </body>
+</html>
