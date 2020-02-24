@@ -1,7 +1,7 @@
 const socket = new WebSocket('ws://10.18.251.51:4567/');
 
 const confidenceThreshold = 0.75;
-const millisForEntry = 2000;
+const millisForEntry = 1500;
 
 class DataEntryModel {
     constructor(listener, view) {
@@ -19,7 +19,7 @@ class DataEntryModel {
 	let prog = (performance.now() - this.lastUpdate) / millisForEntry;
 	if(confidence < confidenceThreshold) {
 	    this.currentProgress-= prog;
-	} else if(sign != null) {
+	} else if(sign != null && sign != "REST") {
 	    this.currentProgress+= prog;
 	}
 	if(this.currentProgress < 0) {
@@ -30,6 +30,7 @@ class DataEntryModel {
 	    this.currentProgress = 0;
 	    this.listener.dataEntered(sign);
 	}
+	this.lastConfidence = confidence;
 	this.lastUpdate = performance.now();
 	this.view.redraw(this);
     }
@@ -47,7 +48,7 @@ class DataEntryView {
 	let r = Math.min(this.canvas.width, this.canvas.height)/2-2;
 
 	this.ctx.lineWidth = 3;
-	
+
 	// outer circle
 	this.ctx.strokeStyle = "#cecece";
 	this.ctx.beginPath();
@@ -84,7 +85,9 @@ class DataEntryView {
 	this.ctx.textAlign = "center";
 	this.ctx.textBaseline = "middle";
 	if(model.currentSign) {
-	    this.ctx.fillText(model.currentSign, this.canvas.width/2, this.canvas.height/2, this.canvas.width);
+	    let text = model.currentSign;// + "\n" + model.lastConfidence;
+	    this.ctx.fillText(text, this.canvas.width/2, this.canvas.height/2, this.canvas.width);
+	    this.ctx.fillText(model.lastConfidence, this.canvas.width/2, this.canvas.height/2+30, this.canvas.width);
 	    this.dei.src = "/asl/" + model.currentSign + ".png";
 	}
     }
@@ -162,8 +165,17 @@ class SpellerState {
     }
 
     dataEntered(sign) {
-	if(sign != null && sign != "rest") {
-	    this.views.lettersBox.value+= sign;   
+	switch(sign) {
+	case null:
+	    break;
+	case "REST":
+	    break;
+	case "BACK":
+	    this.views.lettersBox.value = this.views.lettersBox.value.slice(0, -1);
+	    break;
+	default:
+	    this.views.lettersBox.value+= sign;
+	    break;
 	}
     }
 
@@ -200,6 +212,19 @@ window.addEventListener("load", () => {
     switchState(new HomeState(views));
 });
 
+tf.loadLayersModel("/epic_num_reader_js/model.json").then((model) => {
+    socket.addEventListener("message", function(event) {
+	if(currentState != null) {
+	    let t = tf.tensor(JSON.parse(event.data).slice(0, 18), [1, 18]);
+	    let p = model.predict(t).arraySync()[0];
+	    let sign = p.reduce((iMax, x, i, arr) => x > p[iMax] ? i : iMax, 0);
+	    const labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'REST', 'BACK'];
+	    currentState.dem.update(labels[sign], p[sign]);
+	}
+    });
+});
+
+/*
 let testKey = null;
 window.addEventListener("keydown", (e) => {
     testKey = e.key;
@@ -214,9 +239,4 @@ let updateKey = () => {
     window.requestAnimationFrame(updateKey);
 };
 window.requestAnimationFrame(updateKey);
-
-/*socket.addEventListener("message", function(event) {
-    if(currentEntryController != null) {
-	currentEntryController.feed(JSON.parse(event.data));
-    }
-});*/
+*/

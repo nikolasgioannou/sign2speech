@@ -1,6 +1,6 @@
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>
     <script src="gui.js"></script>
     <style>
       body {
@@ -41,9 +41,10 @@
   <body>
     <div id="mainDiv">
       <h1 id="stateLabel"></h1>
+      <p id="confidence"></p>
       <div id="dataEntryDiv">
 	<canvas id="dataEntryCanvas" width="200" height="200"></canvas>
-	<img id="dataEntryImage" height="200"></img>
+	<!--<img id="dataEntryImage" height="200"></img>-->
       </div>
       <input id="lettersBox" readonly></input>
       <ul id="choicesList">
